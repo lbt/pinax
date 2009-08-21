@@ -1,38 +1,66 @@
 #!/bin/bash
 
-rm -rf external/repos
+function clone {
+    dir=$1
+    ref=$2
+
+    if [ -d $dir ] && grep "$ref" $dir/.git/config >/dev/null ; then
+	cd $dir
+	echo "updating $ref"
+	git pull origin master
+	cd ..
+    else
+	rm -rf $dir
+	echo "cloning $ref"
+	git clone -q $ref
+    fi
+}
 
 mkdir -p external/repos
 cd external/repos
 
-echo "cloning django-email-confirmation"
-git clone -q git://github.com/jezdez/django-email-confirmation.git
-echo "cloning django-timezones"
-git clone -q git://github.com/brosner/django-timezones.git
-echo "cloning django-threadedcomments"
-git clone -q git://github.com/ericflo/django-threadedcomments.git
-echo "cloning django-ajax-validation"
-git clone -q git://github.com/alex/django-ajax-validation.git
-echo "cloning django-flag"
-git clone -q git://github.com/pinax/django-flag.git
-echo "cloning django-pagination"
-git clone -q git://github.com/ericflo/django-pagination.git
-echo "cloning django-oembed"
-git clone -q git://github.com/ericflo/django-oembed.git
-echo "cloning django-notification"
-git clone -q git://github.com/brosner/django-notification.git
-echo "cloning django-mailer"
-git clone -q git://github.com/jtauber/django-mailer.git
-echo "cloning django-dbtemplates"
-git clone -q git://github.com/jezdez/django-dbtemplates.git
-echo "cloning django-robots"
-git clone -q git://github.com/jezdez/django-robots.git
-echo "cloning django-announcements"
-git clone -q git://github.com/pinax/django-announcements.git
+clone django-email-confirmation\
+      git://github.com/jezdez/django-email-confirmation.git
+
+clone django-timezones\
+      git://github.com/brosner/django-timezones.git
+
+clone django-threadedcomments\
+      git://github.com/ericflo/django-threadedcomments.git
+
+clone django-ajax-validation\
+      git://github.com/alex/django-ajax-validation.git
+
+clone django-flag\
+      git://github.com/pinax/django-flag.git
+
+clone django-pagination\
+      git://github.com/ericflo/django-pagination.git
+
+clone django-oembed\
+      git://github.com/ericflo/django-oembed.git
+
+clone django-notification\
+      git://github.com/brosner/django-notification.git
+
+clone django-mailer\
+      git://github.com/jtauber/django-mailer.git
+
+clone django-dbtemplates\
+      git://github.com/jezdez/django-dbtemplates.git
+
+clone django-robots\
+      git://github.com/jezdez/django-robots.git
+
+clone django-announcements\
+      git://github.com/pinax/django-announcements.git
+
 echo "checking out django-messages"
+rm -rf django-messages
 svn checkout --quiet http://django-messages.googlecode.com/svn/trunk/ django-messages
 
 cd ../
+find . -maxdepth 1 -type l | xargs rm -f
 ln -s repos/django-email-confirmation/docs emailconfirmation
 ln -s repos/django-timezones/docs timezones
 ln -s repos/django-threadedcomments/docs threadedcomments
